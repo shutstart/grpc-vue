@@ -38,38 +38,14 @@ yarn dev
 bun run dev
 ```
 
-## Production
-
-Build the application for production:
+## Run GO Server
 
 ```bash
-# npm
-npm run build
 
-# pnpm
-pnpm build
+# change directory
+cd go
 
-# yarn
-yarn build
+# run server
+go run ./cmd/grpc-vue/main.go
 
-# bun
-bun run build
 ```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
