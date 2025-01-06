@@ -1,0 +1,63 @@
+version: "3"
+tasks:
+  install-proto-go-plugin:
+    env:
+      PROTOC_VERSION: v1.31.0
+    cmds:
+      - go install google.golang.org/protobuf/cmd/protoc-gen-go@$PROTOC_VERSION
+    status:
+      - go run google.golang.org/protobuf/cmd/protoc-gen-go@$PROTOC_VERSION --help
+  install-proto-go-grpc-plugin:
+    env:
+      PROTOC_GRPC_VERSION: v1.3.0
+    cmds:
+      - go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@$PROTOC_GRPC_VERSION
+    status:
+      - go run google.golang.org/grpc/cmd/protoc-gen-go-grpc@$PROTOC_GRPC_VERSION --help
+  delete-pb-files-basic:
+    cmds:
+      - rm -rf ./grpc/basic/golang
+    status:
+      - ! test -d ./grpc/basic/golang
+  check-if-fd-installed:
+    cmds:
+      - brew install fd
+    status:
+      - fd -h
+  check-if-protoc-installed:
+    cmds:
+      - brew install protobuf@25.1
+    status:
+      - protoc -h
+  generate-proto-files-go-basic:
+    cmds:
+      - PATH=$PATH:$HOME/go/bin protoc --go_out=./grpc/basic ./grpc/basic/*.proto --go-grpc_out=./grpc/basic --go_opt=module=github.com/shutstart/grpc-vue/api/grpc/basic --go-grpc_opt=module=github.com/shutstart/grpc-vue/api/grpc/basic
+      - go run golang.org/x/tools/cmd/goimports@latest -w ./grpc/basic/golang .
+    deps:
+      - check-if-protoc-installed
+      - check-if-fd-installed
+      - install-proto-go-plugin
+      - install-proto-go-grpc-plugin
+      - delete-pb-files-basic
+  install-proto-js:
+    cmds:
+      - npm -g install @grpc/proto-loader
+    status:
+      - proto-loader-gen-types --help
+  delete-ts-protobuf-files-basic:
+    cmds:
+      - rm -rf ./grpc/basic/ts
+    status:
+      - ! test -d ./grpc/basic/ts
+  generate-proto-files-ts-basic:
+    cmds:
+      - proto-loader-gen-types --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=./grpc/basic/ts ./grpc/basic/*.proto
+    deps:
+      - check-if-protoc-installed
+      - check-if-fd-installed
+      - install-proto-js
+      - delete-ts-protobuf-files-basic
+  generate-proto-files:
+    cmds:
+      - task: generate-proto-files-go-basic
+      - task: generate-proto-files-ts-basic
