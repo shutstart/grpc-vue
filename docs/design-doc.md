@@ -102,7 +102,7 @@ Our goal is to identify the best approach considering maintainability, developer
 
 **Cons**
 
-- **Added complexity if SSR is not utilized**: Admin dashboards often don’t need SEO or SSR.
+- **Added complexity if SSR is not utilized**: Admin dashboards often don’t need SEO.
 - **Requires Node.js environment** for SSR deployments, which may not be as performant as Go for heavy concurrency.
 
 **Best For**
